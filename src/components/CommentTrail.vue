@@ -141,7 +141,6 @@
             <v-col class="py-0">
               <v-text-field
                 ref="hour"
-                hide-details="auto"
                 placeholder="小時"
                 v-model="comment.hour"
                 :rules="[() => !!comment.hour || '小時是必填的']"
@@ -151,7 +150,6 @@
             <v-col class="py-0"
               ><v-text-field
                 ref="min"
-                hide-details="auto"
                 placeholder="分鐘"
                 v-model="comment.min"
                 :rules="[() => !!comment.min || '分鐘是必填的']"
