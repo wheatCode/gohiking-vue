@@ -26,7 +26,7 @@
           <v-divider></v-divider>
 
           <v-list nav dense>
-            <v-list-item-group v-model="group" active-class="deep-purple--text text--accent-4">
+            <v-list-item-group active-class="deep-purple--text text--accent-4">
               <v-list-item @click="toPersonalFile">
                 <v-list-item-icon>
                   <v-icon>mdi-account</v-icon>
@@ -92,7 +92,7 @@
             </v-carousel-item>
           </v-carousel>
 
-          <v-sheet class="overflow-x-auto my-3" style="white-space: nowrap" height="110">
+          <v-sheet class="overflow-x-auto my-3" style="white-space: nowrap" height="115">
             <div v-if="$store.state.loading">
               <span class="d-inline-block mx-4 my-5" v-for="i in 12" :key="i">
                 <v-skeleton-loader width="50" height="40" type="card"></v-skeleton-loader>
@@ -261,10 +261,10 @@ export default {
     };
   },
   async mounted() {
-    this.$store.commit("Loading", true);
+    this.$store.commit("loading", true);
     await this.getIndex();
     await this.getUser();
-    this.$store.commit("Loading", false);
+    this.$store.commit("loading", false);
   },
   methods: {
     async getIndex() {
