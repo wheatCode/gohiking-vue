@@ -5,7 +5,7 @@
     </v-app-bar>
 
     <v-sheet
-      class="overflow-y-auto overflow-x-hidden mt-0 mb-4 px-4"
+      class="overflow-y-auto overflow-x-hidden mt-0 mb-4"
       style="height: calc(100% - 110px)"
       width="100%"
     >
@@ -36,7 +36,7 @@
         </div>
       </div>
 
-      <v-card v-else color="basil" flat elevation="0">
+      <v-card v-else color="basil" elevation="0" class="px-4">
         <v-card-text class="pa-0" v-show="trails.length">
           <v-list class="pa-0">
             <v-list-item-group color="primary">
@@ -125,7 +125,7 @@ export default {
   },
   methods: {
     async getTrails() {
-      if (this.$cookies.get("user_Id") || this.$cookies.get("gohiking_token")) {
+      if (!this.$cookies.get("user_Id") || !this.$cookies.get("gohiking_token")) {
         this.$router.push({ name: "Login" });
       }
 
