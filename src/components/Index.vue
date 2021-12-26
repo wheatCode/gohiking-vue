@@ -1,6 +1,6 @@
 <template>
   <v-sheet color="grey lighten-3" class="overflow-hidden" style="position: relative" height="100vh">
-    <v-tabs-items v-model="tab">
+    <v-tabs-items v-model="tab" touchless>
       <v-tab-item>
         <v-app-bar color="deep-purple accent-4" dense dark>
           <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
