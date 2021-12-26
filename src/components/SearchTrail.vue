@@ -32,7 +32,7 @@
           </v-col>
         </template>
 
-        <template>
+        <template v-else>
           <v-col cols="6" class="py-2" v-for="trail in trails" :key="trail.id">
             <v-btn
               text

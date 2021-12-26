@@ -49,7 +49,7 @@
                 <v-list-item-avatar class="my-0 mr-1" min-width="130" height="90" tile>
                   <v-img
                     class="grey lighten-2"
-                    :src="trail.trail.coverImage"
+                    :src="getcoverImage(trail)"
                     style="border-radius: 10px"
                   >
                     <template v-slot:placeholder>
@@ -101,12 +101,27 @@
 export default {
   name: "SuccessPage",
   data() {
-    return { tab: null, dialog: false, trails: [1] };
+    return {
+      tab: null,
+      dialog: false,
+      trails: [
+        {
+          trail: {
+            coverImage: null,
+            location: {
+              county: {
+                name: null,
+              },
+            },
+          },
+        },
+      ],
+    };
   },
   async mounted() {
-    this.$store.commit("Loading", true);
+    this.$store.commit("loading", true);
     await this.getTrails();
-    this.$store.commit("Loading", false);
+    this.$store.commit("loading", false);
   },
   methods: {
     async getTrails() {
@@ -138,6 +153,9 @@ export default {
       this.$nextTick(() => {
         this.tab = "/Collect";
       });
+    },
+    getcoverImage(trail) {
+      return trail.trail.coverImage;
     },
   },
   computed: {
