@@ -16,7 +16,7 @@
       :autoCropArea="0.6"
       :center="false"
       :toggleDragModeOnDblclick="false"
-      style="width: 100vw; height: 350px"
+      style="width: 100%; height: 350px"
       class="d-flex align-center"
     />
   </div>

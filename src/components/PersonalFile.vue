@@ -270,7 +270,9 @@ export default {
       await this.$axios
         .putApi(`/api/user/${this.user_id}`, {
           ...this.user,
-          image: this.$store.state.cropperImage,
+          image: Buffer.from(this.$store.state.cropperImage, "base64")
+            ? this.$store.state.cropperImage
+            : null,
         })
         .then((res) => {
           if (!res) return;
@@ -356,8 +358,6 @@ export default {
         this.showCountycodes[this.showSelectCountryCode - 1].text + " " + this.user.phone_number
       );
     },
-  },
-  computed: {
     form() {
       return {
         name: this.user.name,

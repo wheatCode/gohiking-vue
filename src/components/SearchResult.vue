@@ -214,7 +214,8 @@
           </div>
         </div>
       </div>
-      <v-card color="basil" flat v-else>
+
+      <v-card color="basil" elevation="0" flat v-else>
         <v-card-text class="pa-0" v-show="trails.length">
           <v-list class="pa-0">
             <v-list-item-group color="primary">
@@ -309,7 +310,7 @@ export default {
     };
   },
   async mounted() {
-    this.$store.commit("Loading", true);
+    this.$store.commit("loading", true);
     await this.getClassification();
     await this.getCountry();
     this.trailfilter.filters.title = this.$route.params.title || null;
@@ -317,7 +318,7 @@ export default {
       ? this.$route.params.classification - 1
       : null;
     await this.searchTrail();
-    this.$store.commit("Loading", false);
+    this.$store.commit("loading", false);
   },
   methods: {
     toTrailInTroduction(id) {

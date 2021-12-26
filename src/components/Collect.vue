@@ -36,7 +36,7 @@
         </div>
       </div>
 
-      <v-card v-else color="basil" elevation="0" class="px-4">
+      <v-card v-else color="basil" elevation="0" class="px-2">
         <v-card-text class="pa-0" v-show="trails.length">
           <v-list class="pa-0">
             <v-list-item-group color="primary">

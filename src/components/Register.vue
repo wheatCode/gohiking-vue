@@ -1,5 +1,5 @@
 <template>
-  <v-card elevation="2" class="px-1 pb-5">
+  <v-card elevation="0" class="px-1 pb-5">
     <v-toolbar flat>
       <v-btn icon @click="$router.push({ name: 'Index' })">
         <v-icon size="25" class="success--text icon_border">mdi-arrow-left</v-icon>
@@ -10,45 +10,48 @@
       <h1 class="font-weight-bold text-h5">註冊帳號</h1>
     </v-card-title>
 
+    <v-alert color="red darken-2" class="mx-3" dark v-if="$store.state.error">
+      {{ $store.state.error }}
+    </v-alert>
+
     <v-card-text>
-      <label for="" class="font-weight-bold black--text d-inline-block mt-5">電子郵件</label>
+      <label for="" class="font-weight-bold black--text d-inline-block mt-2">電子郵件</label>
       <v-text-field
         ref="email"
         v-model="email"
-        hide-details
         class="pt-0"
         placeholder="請輸入您的電子郵件"
         :rules="[
           () => !!email || '電子郵件是必填的',
-          () => emailRule.test(mail) || '填寫正確的電子郵件格式',
+          () => emailRule.test(email) || '填寫正確的電子郵件格式',
         ]"
       ></v-text-field>
 
-      <label for="" class="font-weight-bold black--text d-inline-block mt-10">密碼</label>
+      <label for="" class="font-weight-bold black--text d-inline-block mt-2">密碼</label>
       <v-text-field
         ref="pwd"
+        type="password"
         v-model="pwd"
-        hide-details
         class="pt-0"
         placeholder="請輸入您的密碼"
         :rules="[() => !!pwd || '密碼是必填的']"
       ></v-text-field>
-      <div class="pt-2 grey--text text--dark-1">密碼必須包含8個字元以上</div>
 
-      <label for="" class="font-weight-bold black--text d-inline-block mt-10">確認密碼</label>
+      <label for="" class="font-weight-bold black--text d-inline-block mt-2">確認密碼</label>
       <v-text-field
         ref="checkpwd"
+        type="password"
         v-model="checkpwd"
-        hide-details
         class="pt-0"
         placeholder="請重新輸入您的密碼"
-        :rules="[() => !!checkpwd || '重新輸入密碼是必填的']"
+        :rules="[() => !!checkpwd || '重新輸入密碼是必填的', pwd == checkpwd || '兩個密碼必須相同']"
       ></v-text-field>
     </v-card-text>
 
     <v-card-subtitle class="black--text pt-0">
-      使用這個應用程式前，請先詳閱「Go Hiking」的《<router-link to="#">隱私權政策</router-link
-      >》及《<router-link to="#">服務條款</router-link>》
+      使用這個應用程式前，請先詳閱「Go Hiking」的《<router-link to="/Privacy"
+        >隱私權政策</router-link
+      >》及《<router-link to="/Privacy">服務條款</router-link>》
     </v-card-subtitle>
 
     <v-card-actions class="mt-5">

@@ -23,7 +23,7 @@
         v-model="user.gender"
       ></v-select>
 
-      <label for="" class="font-weight-bold black--text d-inline-block mt-5">姓名</label>
+      <label for="" class="font-weight-bold black--text d-inline-block mt-5">國碼</label>
       <v-row>
         <v-col cols="4"
           ><v-select
@@ -107,6 +107,12 @@ export default {
       },
     };
   },
+  async mounted() {
+    this.$store.commit("loading", true);
+    await this.getCountryCode();
+    await this.getCountry();
+    this.$store.commit("loading", false);
+  },
   methods: {
     async toRegister() {
       const vm = this;
@@ -116,6 +122,20 @@ export default {
         const { data } = res;
         console.log(data);
         vm.$router.push({ name: "Index" });
+      });
+    },
+    async getCountryCode() {
+      await this.$axios.getApi("/api/countrycode").then((res) => {
+        if (!res) return;
+        const { data } = res;
+        this.countycodes = [...data];
+      });
+    },
+    async getCountry() {
+      await this.$axios.getApi("/api/country").then((res) => {
+        if (!res) return;
+        const { data } = res;
+        this.countries = [...data];
       });
     },
   },

@@ -1,9 +1,9 @@
 <template>
   <v-app class="pa-0 ma-0">
-    <v-container class="pa-0 ma-0">
-      <v-row class="pa-0 ma-0" justify="center">
-        <v-col class="pa-0 ma-0" md="6">
-          <v-main class="pa-0 ma-0">
+    <v-container>
+      <v-row justify="center">
+        <v-col class="pa-0" md="6">
+          <v-main>
             <router-view />
           </v-main>
         </v-col>

@@ -18,8 +18,8 @@
       <v-card-text>
         <label for="" class="font-weight-bold black--text d-inline-block">電子郵件</label>
         <v-text-field
-          ref="email"
           autofocus
+          ref="email"
           class="pt-0"
           v-model="user.email"
           placeholder="請輸入電子郵件"
@@ -34,7 +34,6 @@
         <v-text-field
           ref="password"
           type="password"
-          autofocus
           class="pt-0"
           v-model="user.password"
           placeholder="請輸入密碼"
@@ -44,6 +43,7 @@
 
         <router-link to="/ForgetPwd" class="d-block text-right black--text">忘記密碼</router-link>
       </v-card-text>
+
       <v-card-actions>
         <v-btn
           block
