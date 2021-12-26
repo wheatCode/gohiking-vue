@@ -64,7 +64,7 @@
       <v-card
         elevation="0"
         rounded="0"
-        class="text-center"
+        class="text-center personal-input"
         min-height="200"
         :loading="$store.state.loading"
       >
@@ -379,3 +379,13 @@ export default {
   },
 };
 </script>
+<style lang="scss" scoped>
+.personal-input::v-deep {
+  .theme--light.v-text-field.v-input--is-disabled .v-input__slot::before {
+    border-image: none !important;
+  }
+  .theme--light.v-input--is-disabled input {
+    color: black !important;
+  }
+}
+</style>
