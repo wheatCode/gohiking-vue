@@ -1,9 +1,9 @@
 <template>
-  <v-app>
-    <v-container>
-      <v-row justify="center">
-        <v-col class="pa-0" md="6">
-          <v-main>
+  <v-app class="pa-0 ma-0">
+    <v-container class="pa-0 ma-0">
+      <v-row class="pa-0 ma-0" justify="center">
+        <v-col class="pa-0 ma-0" md="6">
+          <v-main class="pa-0 ma-0">
             <router-view />
           </v-main>
         </v-col>
@@ -21,3 +21,14 @@ export default {
   }),
 };
 </script>
+<style lang="scss">
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+* {
+  margin: 0;
+  padding: 0;
+}
+</style>
