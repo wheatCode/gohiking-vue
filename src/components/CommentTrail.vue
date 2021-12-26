@@ -9,17 +9,29 @@
 
       <v-spacer></v-spacer>
 
-      <v-btn icon class="white--text" x-large @click="submitComment"> 發布 </v-btn>
+      <v-btn
+        icon
+        class="white--text"
+        x-large
+        @click="submit"
+        :loading="loading"
+        :disabled="loading"
+      >
+        發布
+      </v-btn>
     </v-toolbar>
 
     <v-card
       color="grey lighten-3"
-      v-scroll.self="onScroll"
       elevation="0"
       class="overflow-y-auto"
       raised
       style="height: 90vh"
     >
+      <v-alert color="red darken-2" class="mx-3" dark v-if="$store.state.error">
+        {{ $store.state.error }}
+      </v-alert>
+
       <!-- 日期 -->
       <v-list-item class="mt-2" style="background: white">
         <v-list-item-content>
@@ -28,12 +40,14 @@
             <v-menu
               :nudge-right="40"
               v-model="menu2"
+              autofocus
               transition="scale-transition"
               offset-y
               min-width="auto"
             >
               <template v-slot:activator="{ on, attrs }">
                 <v-text-field
+                  ref="date"
                   class="pa-0"
                   append-icon="mdi-calendar"
                   placeholder="請輸入日期"
@@ -42,6 +56,7 @@
                   v-on="on"
                   hide-details="auto"
                   v-model="comment.date"
+                  :rules="[() => !!comment.date || '日期是必填的']"
                 ></v-text-field>
               </template>
 
@@ -62,14 +77,19 @@
       <v-list-item class="mt-2" style="background: white">
         <v-list-item-content>
           <v-list-item-title class="text-h6">步道記錄與評價</v-list-item-title>
-          <v-card-text class="pa-0">
+
+          <v-card-text class="pa-0 mt-1">
             <v-rating
               color="yellow darken-3"
+              dense
               hover
               background-color="grey lighten-1"
               x-large
               v-model="comment.star"
+              class="rating-padding"
             ></v-rating>
+
+            <span class="text-caption error--text">{{ errorMessage }}</span>
           </v-card-text>
         </v-list-item-content>
       </v-list-item>
@@ -120,33 +140,42 @@
           <v-row class="d-flex align-center py-0">
             <v-col class="py-0">
               <v-text-field
+                ref="hour"
                 hide-details="auto"
                 placeholder="小時"
                 v-model="comment.hour"
+                :rules="[() => !!comment.hour || '小時是必填的']"
               ></v-text-field>
             </v-col>
 
             <v-col class="py-0"
               ><v-text-field
+                ref="min"
                 hide-details="auto"
                 placeholder="分鐘"
                 v-model="comment.min"
+                :rules="[() => !!comment.min || '分鐘是必填的']"
               ></v-text-field>
             </v-col>
           </v-row>
+
           <v-list-item-title class="text-h6 mt-3">評論</v-list-item-title>
+
           <v-card-text class="pa-0">
             <v-textarea
+              ref="content"
               clearable
               clear-icon="mdi-close-circle"
               placeholder="說點什麼吧......"
               v-model="comment.content"
+              :rules="[() => !!comment.content || '評論是必填的']"
             ></v-textarea>
           </v-card-text>
-          <v-card-action>
+
+          <!-- <v-card-action>
             照片上傳限制為15張以內
             <v-btn block color="success" outlined x-large class="mt-3">上傳照片</v-btn>
-          </v-card-action>
+          </v-card-action> -->
         </v-list-item-content>
       </v-list-item>
     </v-card>
@@ -159,6 +188,11 @@ export default {
   data() {
     return {
       menu2: false,
+      loading: false,
+      formHasErrors: false,
+      errorMessage: "",
+      difficulty: 50,
+      beauty: 50,
       comment: {
         user_id: null,
         trail_id: null,
@@ -171,9 +205,25 @@ export default {
     };
   },
   methods: {
-    submitComment() {
-      this.prepareData();
-      this.$axios.postApi("/api/comment", this.comment).then((res) => {
+    async submit() {
+      this.loading = true;
+      this.formHasErrors = false;
+      Object.keys(this.form).forEach((f) => {
+        if (!this.form[f]) this.formHasErrors = true;
+        if (!this.$refs[f].validate(true)) this.formHasErrors = true;
+      });
+      if (!this.comment.star) {
+        this.formHasErrors = true;
+        this.errorMessage = "步道記錄與評價是必填的";
+      }
+      if (!this.formHasErrors) {
+        this.prepareData();
+        await this.postComment();
+      }
+      this.loading = false;
+    },
+    async postComment() {
+      await this.$axios.postApi("/api/comment", this.comment).then((res) => {
         if (!res) return;
         this.$store.dispatch("toPrevRouter");
       });
@@ -187,6 +237,14 @@ export default {
     },
   },
   computed: {
+    form() {
+      return {
+        date: this.comment.date,
+        hour: this.comment.hour,
+        min: this.comment.min,
+        content: this.comment.content,
+      };
+    },
     showDifficult() {
       switch (this.difficulty) {
         case 0:
@@ -214,6 +272,11 @@ export default {
         case 100:
           return "風景很美";
       }
+    },
+  },
+  watch: {
+    "comment.star"(nv) {
+      if (this.formHasErrors && nv) this.errorMessage = "";
     },
   },
 };
@@ -245,6 +308,13 @@ export default {
   .v-slider__tick .v-slider__tick-label {
     top: 18px;
     left: 3px;
+  }
+}
+//v-rating
+.rating-padding::v-deep {
+  .v-icon {
+    padding-left: 0px !important;
+    padding-right: 20px !important;
   }
 }
 </style>

@@ -1,34 +1,64 @@
 <template>
-  <v-card elevation="2" class="px-5 pb-5">
-    <v-card-title class="mt-5">
-      <h1 class="font-weight-bold text-h5">登入</h1>
-    </v-card-title>
-    <v-card-text>
-      <label for="" class="font-weight-bold black--text d-inline-block mt-5">電子郵件</label>
-      <v-text-field
-        hide-details
-        class="pt-0"
-        v-model="user.email"
-        placeholder="請輸入電子郵件"
-      ></v-text-field>
+  <v-sheet>
+    <v-toolbar flat>
+      <v-btn icon @click="$store.dispatch('toPrevRouter')">
+        <v-icon color="success" large>mdi-arrow-left</v-icon>
+      </v-btn>
+    </v-toolbar>
 
-      <label for="" class="font-weight-bold black--text d-inline-block mt-5">密碼</label>
-      <v-text-field
-        hide-details
-        class="pt-0"
-        v-model="user.password"
-        placeholder="請輸入密碼"
-      ></v-text-field>
+    <v-card elevation="0" class="pb-5" ref="form">
+      <v-card-title>
+        <h1 class="font-weight-bold text-h5">登入</h1>
+      </v-card-title>
 
-      <router-link to="/ForgetPwd" class="d-block text-right black--text pt-3"
-        >忘記密碼</router-link
-      >
-    </v-card-text>
+      <v-alert color="red darken-2" class="mx-3" dark v-if="$store.state.error">
+        {{ $store.state.error }}
+      </v-alert>
 
-    <v-card-actions>
-      <v-btn block elevation="2" color="success" x-large @click="login">登入</v-btn>
-    </v-card-actions>
-  </v-card>
+      <v-card-text>
+        <label for="" class="font-weight-bold black--text d-inline-block">電子郵件</label>
+        <v-text-field
+          ref="email"
+          autofocus
+          class="pt-0"
+          v-model="user.email"
+          placeholder="請輸入電子郵件"
+          :rules="[
+            () => !!user.email || '電子郵件是必填的',
+            () => emailRule.test(user.email) || '填寫正確的電子郵件格式',
+          ]"
+          required
+        ></v-text-field>
+
+        <label for="" class="font-weight-bold black--text d-inline-block">密碼</label>
+        <v-text-field
+          ref="password"
+          type="password"
+          autofocus
+          class="pt-0"
+          v-model="user.password"
+          placeholder="請輸入密碼"
+          :rules="[() => !!user.password || '密碼是必填的']"
+          required
+        ></v-text-field>
+
+        <router-link to="/ForgetPwd" class="d-block text-right black--text">忘記密碼</router-link>
+      </v-card-text>
+      {{ errorMessages }}
+      <v-card-actions>
+        <v-btn
+          block
+          elevation="2"
+          color="success"
+          x-large
+          @click="submit"
+          :loading="loading"
+          :disabled="loading"
+          >登入</v-btn
+        >
+      </v-card-actions>
+    </v-card>
+  </v-sheet>
 </template>
 
 <script>
@@ -36,6 +66,11 @@ export default {
   name: "SuccessPage",
   data() {
     return {
+      loading: false,
+      formHasErrors: false,
+      errorMessages: "",
+      emailRule:
+        /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,24}))$/,
       user: {
         email: null,
         password: null,
@@ -43,8 +78,19 @@ export default {
     };
   },
   methods: {
-    login() {
-      this.$axios.postApi("/api/login", { ...this.user }).then((res) => {
+    submit() {
+      this.formHasErrors = false;
+      Object.keys(this.form).forEach((f) => {
+        if (!this.form[f]) this.formHasErrors = true;
+        if (!this.$refs[f].validate(true)) this.formHasErrors = true;
+      });
+      if (!this.formHasErrors) {
+        this.login();
+      }
+    },
+    async login() {
+      this.loading = true;
+      await this.$axios.postApi("/api/login", { ...this.user }).then((res) => {
         if (!res) return;
         const { data } = res;
         const { token, userId } = data;
@@ -52,6 +98,15 @@ export default {
         this.$cookies.set("user_Id", userId);
         this.$router.push({ name: "Index" });
       });
+      this.loading = false;
+    },
+  },
+  computed: {
+    form() {
+      return {
+        email: this.user.email,
+        password: this.user.password,
+      };
     },
   },
 };

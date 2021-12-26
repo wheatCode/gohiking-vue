@@ -5,14 +5,27 @@ import Cookies from 'js-cookie'
 
 Vue.use(Vuex);
 
-export default new Vuex.Store({
+const store = new Vuex.Store({
+  namespaced: true,
   state: {
-    loading:false
+    loading:false,
+    error:null,
+    success:null,
+    cropperImage:'https:://image.shutterstock.com/image-photo/sky-clouds-260nw-193491221.jpg',
   },
   mutations: {
-    Loading(state,n){
+    loading(state,n){
       state.loading = n;
-    }
+    },
+    error(state,n){
+      state.error = n;
+    },
+    success(state,n){
+      state.success = n;
+    },
+    cropperImage(state,n){
+      state.cropperImage = n;
+    },
   },
   actions: {
     toPrevRouter(){
@@ -26,9 +39,19 @@ export default new Vuex.Store({
       // }
     },
     loadingPage(context,status){
-      context.commit('Loading',status)
-    }
+      context.commit('loading',status)
+    },
+    setError(context,status){
+      context.commit('error',status)
+    },  
+    setSuccess(context,status){
+      context.commit('success',status)
+    },
+    setCropperImage(context,status){
+      context.commit('cropperImage',status)
+    },
   },
   modules: {
   },
 });
+export default store;

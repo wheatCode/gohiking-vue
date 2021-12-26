@@ -1,6 +1,6 @@
 <template>
   <section class="text-center">
-    <v-card elevation="2" rounded="0">
+    <v-card elevation="0">
       <v-img
         src="https://images.freeimages.com/images/large-previews/1e6/colorful-sky-1640504.jpg"
         alt=""
@@ -8,12 +8,12 @@
         width="100%"
         ><div class="text-h4 white--text font-italic font-weight-black pt-15">GO HIKING</div></v-img
       >
-      <v-card-actions>
+      <!-- <v-card-actions>
         <v-btn to="/Register" block color="white" large @click="signIn">
           <v-img :src="require('@/assets/login/google.png')" max-width="25" height="25"></v-img>
           透過 Google 登入
         </v-btn>
-      </v-card-actions>
+      </v-card-actions> -->
       <v-card-actions>
         <v-btn block to="/EmailLogin" elevation="2" color="success" large>透過 Email 登入</v-btn>
       </v-card-actions>

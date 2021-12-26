@@ -19,7 +19,7 @@
     <h3 class="px-4 mb-3 mt-3">快速搜尋</h3>
     <v-sheet class="overflow-y-auto px-4" style="height: calc(100% - 240px)">
       <v-row>
-        <!-- <template v-if="$store.state.loading">
+        <template v-if="$store.state.loading">
           <v-col cols="6" class="py-2" v-for="i in 12" :key="i">
             <div>
               <v-skeleton-loader
@@ -30,7 +30,7 @@
               ></v-skeleton-loader>
             </div>
           </v-col>
-        </template> -->
+        </template>
 
         <template>
           <v-col cols="6" class="py-2" v-for="trail in trails" :key="trail.id">
@@ -39,7 +39,6 @@
               height="100%"
               width="100%"
               class="text-start pa-0"
-              :loading="$store.state.loading"
               @click="toSearchResult(trail.id)"
             >
               <v-sheet color="#ffecdc" height="70" width="100%" rounded style="position: relative">
@@ -67,16 +66,14 @@ export default {
   data() {
     return { tab: null, dialog: false, trail: null, trails: [] };
   },
-  beforeMount() {
-    this.$store.dispatch("loadingPage", true);
-  },
   async mounted() {
+    this.$store.dispatch("loadingPage", true);
     await this.getClassFication();
     this.$store.dispatch("loadingPage", false);
   },
   methods: {
-    getClassFication() {
-      this.$axios.getApi("api/classification").then((res) => {
+    async getClassFication() {
+      await this.$axios.getApi("api/classification").then((res) => {
         const { data } = res;
         this.trails = { ...data };
         console.log(this.trails);

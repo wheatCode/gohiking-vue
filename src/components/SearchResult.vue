@@ -30,13 +30,7 @@
           </v-list-item-content>
         </v-list-item>
 
-        <v-card
-          v-scroll.self="onScroll"
-          elevation="0"
-          class="overflow-y-auto"
-          style="height: calc(100% - 130px)"
-          raised
-        >
+        <v-card elevation="0" class="overflow-y-auto" style="height: calc(100% - 130px)" raised>
           <!-- 主題 -->
           <v-list-item>
             <v-list-item-content>
@@ -194,7 +188,7 @@
       style="height: calc(100% - 150px)"
       width="100%"
     >
-      <div v-show="$store.state.loading">
+      <div v-if="$store.state.loading">
         <div class="d-flex align-start mt-2" v-for="i in 10" :key="i">
           <v-skeleton-loader width="220" height="90" type="card"></v-skeleton-loader>
           <div class="ml-3" style="width: 100%">
@@ -220,7 +214,7 @@
           </div>
         </div>
       </div>
-      <v-card v-show="!$store.state.loading" color="basil" flat v-lse>
+      <v-card color="basil" flat v-else>
         <v-card-text class="pa-0" v-show="trails.length">
           <v-list class="pa-0">
             <v-list-item-group color="primary">
@@ -314,27 +308,25 @@ export default {
       trails: [1],
     };
   },
-  beforeCreate() {
+  async mounted() {
     this.$store.commit("Loading", true);
-  },
-  mounted() {
-    this.getClassification();
-    this.getCountry();
+    await this.getClassification();
+    await this.getCountry();
     this.trailfilter.filters.title = this.$route.params.title || null;
     this.classification = this.$route.params.classification
       ? this.$route.params.classification - 1
       : null;
-    this.searchTrail();
+    await this.searchTrail();
     this.$store.commit("Loading", false);
   },
   methods: {
     toTrailInTroduction(id) {
       this.$router.push({ path: `/TrailInTroduction/${id}` });
     },
-    searchTrail() {
+    async searchTrail() {
       this.drawer = false;
       this.setFilterData();
-      this.getTrails();
+      await this.getTrails();
     },
     setFilterData() {
       this.trailfilter.filters.classification = this.classification + 1;
@@ -344,20 +336,20 @@ export default {
       this.trailfilter.filters.altitude1 = this.tibet[0] * 1000;
       this.trailfilter.filters.altitude2 = this.tibet[1] * 1000;
     },
-    getClassification() {
-      this.$axios.getApi("/api/classification").then((res) => {
+    async getClassification() {
+      await this.$axios.getApi("/api/classification").then((res) => {
         const { data } = res;
         this.classifications = [...data];
       });
     },
-    getCountry() {
-      this.$axios.getApi("/api/country").then((res) => {
+    async getCountry() {
+      await this.$axios.getApi("/api/country").then((res) => {
         const { data } = res;
         this.countries = [...data];
       });
     },
-    getTrails() {
-      this.$axios
+    async getTrails() {
+      await this.$axios
         .postApi("/api/trail", {
           filters: { ...this.trailfilter.filters },
           uuid: this.$cookies.get("user_Id"),
@@ -369,8 +361,8 @@ export default {
           console.log(data);
         });
     },
-    toggleFavorite(id) {
-      this.$axios
+    async toggleFavorite(id) {
+      await this.$axios
         .postApi("/api/favorite", {
           user_id: this.$cookies.get("user_Id"),
           trail_id: id,

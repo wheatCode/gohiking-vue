@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import Cookies from 'js-cookie'
+import store from '../store';
 
 Vue.use(VueRouter);
 
@@ -117,6 +118,11 @@ const routes = [
     meta: { requireAuth: true }, 
     component: () => import("@/components/CommentTrail.vue"),
   },
+  {
+    path: "/test",
+    name: "test",
+    component: () => import("@/components/test.vue"),
+  },
 ];
 
 const router = new VueRouter({
@@ -125,8 +131,9 @@ const router = new VueRouter({
   routes,
 });
 
-router.beforeEach(async(to, from, next) => {
-  console.log(to,from);
+router.beforeEach((to, from, next) => {
+  resetMessage();
+
   if (to.meta.requireAuth) {
     const token = Cookies.get('gohiking_token')
     if (token) {
@@ -147,5 +154,9 @@ router.beforeEach(async(to, from, next) => {
   }
 })
 
+function resetMessage(){
+  store.dispatch("setSuccess", '');
+  store.dispatch("setError", '');
+}
 
 export default router;

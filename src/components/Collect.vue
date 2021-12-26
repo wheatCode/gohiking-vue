@@ -5,11 +5,38 @@
     </v-app-bar>
 
     <v-sheet
-      class="overflow-y-auto overflow-x-hidden"
+      class="overflow-y-auto overflow-x-hidden mt-0 mb-4 px-4"
       style="height: calc(100% - 110px)"
       width="100%"
     >
-      <v-card color="basil" flat class="pl-1">
+      <div v-if="$store.state.loading">
+        <div class="d-flex align-start mt-2" v-for="i in 10" :key="i">
+          <v-skeleton-loader width="220" height="90" type="card"></v-skeleton-loader>
+          <div class="ml-3" style="width: 100%">
+            <v-skeleton-loader
+              class="mb-4"
+              width="100%"
+              height="20"
+              type="card"
+            ></v-skeleton-loader>
+            <v-skeleton-loader
+              class="mt-2 mb-3"
+              width="100"
+              height="15"
+              type="card"
+            ></v-skeleton-loader>
+            <v-skeleton-loader
+              class="mt-2 mb-3"
+              width="100"
+              height="15"
+              type="card"
+            ></v-skeleton-loader>
+            <v-divider class="ma-0"></v-divider>
+          </div>
+        </div>
+      </div>
+
+      <v-card v-else color="basil" flat>
         <v-card-text class="pa-0" v-show="trails.length">
           <v-list class="pa-0">
             <v-list-item-group color="primary">
@@ -64,7 +91,7 @@
           </v-list>
         </v-card-text>
 
-        <v-card-text class="pa-0" v-show="!trails.length">您尚未有收藏的道路</v-card-text>
+        <v-card-text class="text-h6" v-show="!trails.length">您尚未有收藏的道路</v-card-text>
       </v-card>
     </v-sheet>
   </v-sheet>
@@ -76,23 +103,27 @@ export default {
   data() {
     return { tab: null, dialog: false, trails: [1] };
   },
-  mounted() {
-    this.getTrails();
+  async mounted() {
+    this.$store.commit("Loading", true);
+    await this.getTrails();
+    this.$store.commit("Loading", false);
   },
   methods: {
-    getTrails() {
-      this.$axios.getApi(`/api/favorites?uuid=${this.$cookies.get("user_Id")}`).then((res) => {
-        if (!res) return;
-        const { data } = res;
-        this.trails = [...data];
-        console.log(this.trails);
-      });
+    async getTrails() {
+      await this.$axios
+        .getApi(`/api/favorites?uuid=${this.$cookies.get("user_Id")}`)
+        .then((res) => {
+          if (!res) return;
+          const { data } = res;
+          this.trails = [...data];
+          console.log(this.trails);
+        });
     },
     toTrailInTroduction(id) {
       this.$router.push({ path: `/TrailInTroduction/${id}` });
     },
-    toggleFavorite(id) {
-      this.$axios
+    async toggleFavorite(id) {
+      await this.$axios
         .postApi("/api/favorite", {
           user_id: this.$cookies.get("user_Id"),
           trail_id: id,

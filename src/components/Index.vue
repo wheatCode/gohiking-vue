@@ -13,13 +13,7 @@
 
         <v-navigation-drawer v-model="drawer" absolute left temporary style="z-index: 99999">
           <v-sheet class="px-3">
-            <v-img
-              src="https://image.shutterstock.com/image-photo/sky-clouds-260nw-193491221.jpg"
-              class="rounded-circle my-3"
-              width="55"
-              height="55"
-            >
-            </v-img>
+            <v-img :src="user.image" class="rounded-circle my-3" width="55" height="55"> </v-img>
             <div class="font-weight-bold text-center" style="width: 55px">
               {{ user.name || "訪客" }}
             </div>
@@ -99,24 +93,23 @@
           </v-carousel>
 
           <v-sheet class="overflow-x-auto my-3" style="white-space: nowrap" height="110">
-            <!-- <div v-if="$store.state.loading">
-          <span class="d-inline-block mx-4 my-5" v-for="i in 12" :key="i">
-            <v-skeleton-loader width="50" height="40" type="card"></v-skeleton-loader>
-            <v-skeleton-loader
-              class="mt-2"
-              width="50"
-              height="20"
-              type="button"
-            ></v-skeleton-loader>
-          </span>
-        </div> -->
+            <div v-if="$store.state.loading">
+              <span class="d-inline-block mx-4 my-5" v-for="i in 12" :key="i">
+                <v-skeleton-loader width="50" height="40" type="card"></v-skeleton-loader>
+                <v-skeleton-loader
+                  class="mt-2"
+                  width="50"
+                  height="20"
+                  type="button"
+                ></v-skeleton-loader>
+              </span>
+            </div>
 
             <v-btn
               text
               fab
               x-large
               class="mx-4 my-5"
-              :loading="$store.state.loading"
               v-for="classification in classifications"
               :key="classification.id"
               @click="toQuickSearch(classification.id)"
@@ -151,12 +144,14 @@
             <div v-if="$store.state.loading">
               <span class="d-inline-block mx-3" v-for="i in 12" :key="i">
                 <v-skeleton-loader width="175" height="100" type="card"></v-skeleton-loader>
+
                 <v-skeleton-loader
                   class="mt-2"
                   width="175"
                   height="20"
                   type="card"
                 ></v-skeleton-loader>
+
                 <v-skeleton-loader
                   class="mt-2"
                   width="80"
@@ -265,15 +260,15 @@ export default {
       slides: ["First", "Second", "Third", "Fourth", "Fifth"],
     };
   },
-  mounted() {
+  async mounted() {
     this.$store.commit("Loading", true);
-    this.getIndex();
-    this.getUser();
+    await this.getIndex();
+    await this.getUser();
     this.$store.commit("Loading", false);
   },
   methods: {
-    getIndex() {
-      this.$axios.getApi("/api/home").then((res) => {
+    async getIndex() {
+      await this.$axios.getApi("/api/home").then((res) => {
         if (!res) return;
         const { data } = res;
         const { banners, articles, classifications } = data;
@@ -282,9 +277,9 @@ export default {
         this.classifications = [...classifications];
       });
     },
-    getUser() {
+    async getUser() {
       if (this.$cookies.get("user_Id")) {
-        this.$axios.getApi(`/api/user/${this.$cookies.get("user_Id")}`).then((res) => {
+        await this.$axios.getApi(`/api/user/${this.$cookies.get("user_Id")}`).then((res) => {
           if (!res) return;
           const { users } = res.data;
           this.user = { ...users };

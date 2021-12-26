@@ -1,19 +1,28 @@
 import * as axios_ from "axios";
+import store from '../../store';
 
 const axios = axios_.create({
   baseURL: process.env.VUE_APP_BASEURL,
 });
 
 function getApi(url) {
+  resetMessage();
   return axios.get(url);
 }
 
 function postApi(url, data, options) {
+  resetMessage();
   return axios.post(url, data, options);
 }
 
 function putApi(url, data, options) {
+  resetMessage();
   return axios.patch(url, data, options);
+}
+
+function resetMessage(){
+  store.dispatch("setSuccess", '');
+  store.dispatch("setError", '');
 }
 
 function getCookie(name) {
@@ -45,18 +54,20 @@ axios.interceptors.response.use(
     
     switch (status) {
       case 401:
-        console.log(status);
-        console.log(data.error);
+        store.dispatch('setError',data.error);
+
         break;
       case 404:
         console.log(status);
         console.log(data.error);
+        store.dispatch('setError',data.error);
         break;
       case 422:
-        console.log(status);
+        let error='';
         for (const errorI in data.errors) {
-          console.log(errorI, data.errors[errorI]);
+          error +=data.errors[errorI][0] +'<br>'
         }
+        store.dispatch('setError',error);
         break;
       default:
         break;

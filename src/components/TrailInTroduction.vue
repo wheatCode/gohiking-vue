@@ -59,7 +59,7 @@
     </v-sheet>
 
     <div class="overflow-y-auto pb-15" style="height: 70%">
-      <v-sheet class="mt-3 py-2">
+      <v-sheet class="mt-3 py-2 px-3">
         <v-chip outlined class="ma-1" v-for="chip in chips" :key="chip.chip.id">
           {{ chip.chip.name }}
         </v-chip>
@@ -131,14 +131,14 @@
         </v-list>
       </v-sheet>
 
-      <v-sheet class="mt-3 px-3 py-3">
+      <!-- <v-sheet class="mt-3 px-3 py-3">
         <h3>登山口</h3>
         <v-chip color="green" label> Tags </v-chip>
-      </v-sheet>
+      </v-sheet> -->
 
-      <v-sheet class="mt-3 px-3 py-3">
+      <!-- <v-sheet class="mt-3 px-3 py-3">
         <h3>步道雷達圖</h3>
-      </v-sheet>
+      </v-sheet> -->
 
       <v-sheet class="mt-3 px-3 py-3">
         <h3>步道介紹</h3>
@@ -147,19 +147,19 @@
         </p>
       </v-sheet>
 
-      <v-sheet class="mt-3 px-3 py-3">
+      <!-- <v-sheet class="mt-3 px-3 py-3">
         <h3>步道照片</h3>
-      </v-sheet>
+      </v-sheet> -->
 
-      <v-sheet class="mt-3 px-3 py-3">
+      <!-- <v-sheet class="mt-3 px-3 py-3">
         <h3>步道消息</h3>
-      </v-sheet>
+      </v-sheet> -->
 
-      <v-sheet class="mt-3 px-3 py-3">
+      <!-- <v-sheet class="mt-3 px-3 py-3">
         <h3>鄰近景點</h3>
-      </v-sheet>
+      </v-sheet> -->
 
-      <v-sheet class="mt-3 px-3 py-3">
+      <!-- <v-sheet class="mt-3 px-3 py-3">
         <h3>步道記錄與評價</h3>
 
         <template>
@@ -177,16 +177,23 @@
             <h3 class="ml-3">{{ trail.evaluation }}</h3>
           </div>
         </template>
-      </v-sheet>
+      </v-sheet> -->
 
       <v-sheet class="mt-3 px-3 py-3" v-if="comments.length >= 1">
-        <v-card class="mx-auto" elevation="0" v-for="comment in commentReverce" :key="comment.id">
-          <v-card-title class="pa-0">{{ comment.user.name }}</v-card-title>
+        <h3>步道記錄與評價</h3>
+
+        <v-card
+          class="mx-auto mt-2"
+          elevation="0"
+          v-for="comment in commentReverce"
+          :key="comment.id"
+        >
+          <v-card-title class="text-subtitle-1 pa-0 ml-1">{{ comment.user.name }}</v-card-title>
 
           <v-card-text class="pa-0">
             <div class="d-flex justify-space-between">
               <template>
-                <div class="d-flex align-center">
+                <div class="d-flex align-center justify-start">
                   <v-rating
                     v-model="comment.star"
                     color="yellow darken-3"
@@ -199,9 +206,10 @@
                   ></v-rating>
                 </div>
               </template>
+
               <v-chip
                 label
-                class="ma-2"
+                class=""
                 style="
                   border: 1px solid #00d04c !important;
                   color: #00d04c;
@@ -212,24 +220,30 @@
               </v-chip>
             </div>
 
-            <p>{{ comment.content }}</p>
+            <p class="ml-1 mb-2">{{ comment.content }}</p>
 
-            <img :src="trail.coverImage" alt="" width="100" height="100" />
+            <img
+              :src="`https://picsum.photos/id/${comment.id}/200/300`"
+              alt=""
+              width="100"
+              height="100"
+              class="ml-1"
+            />
           </v-card-text>
-          <v-card-subtitle class="pa-0"
+          <v-card-subtitle class="pa-0 ml-1"
             >{{ comment.date }} · 來回時間: {{ comment.duration | durationType }}</v-card-subtitle
           >
           <v-divider class="my-2"></v-divider>
         </v-card>
       </v-sheet>
 
-      <v-sheet class="mt-3 px-3">
+      <!-- <v-sheet class="mt-3 px-3">
         <h3>相關文章</h3>
       </v-sheet>
 
       <v-sheet class="mt-3 px-3">
         <h3>相似步道</h3>
-      </v-sheet>
+      </v-sheet> -->
     </div>
 
     <v-footer padless style="position: absolute; bottom: 0px; width: 100%">
@@ -295,12 +309,12 @@ export default {
         this.chips = [...chip_trail];
         this.comments = [...comments];
         this.users = [...users];
+        console.log(data);
       });
     },
     checkFavorite() {
       this.users.forEach((item) => {
         item.id == this.$cookies.get("user_Id") ? (this.showHeart = true) : "";
-        console.log(this.showHeart, item.id, this.$cookies.get("user_Id"));
       });
     },
     toggleFavorite(status) {
@@ -313,7 +327,6 @@ export default {
         })
         .then((res) => {
           if (!res) return;
-          console.log(res);
         });
     },
     toCommentTrail(id) {
@@ -353,18 +366,15 @@ export default {
     },
     shareChips() {
       let show = "";
-      console.log(this.chips);
       this.chips.forEach((item) => {
         show += item.chip.name + ",";
       });
-      console.log(show);
       return show;
     },
     shareQuote() {
       return `想與大家分享得步道-${this.trail.title}`;
     },
     shareUrl() {
-      console.log(window.location.href);
       return window.location.href;
     },
   },
