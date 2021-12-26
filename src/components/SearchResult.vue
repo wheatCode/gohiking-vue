@@ -17,6 +17,7 @@
         append-icon="mdi-microphone"
         class="input_color"
         @keyup="searchTrail"
+        @keydown="searchTrail"
         @keypress="searchTrail"
       ></v-text-field>
 
