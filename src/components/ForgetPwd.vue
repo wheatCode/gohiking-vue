@@ -57,7 +57,7 @@
           x-large
           @click="submit"
           :loading="loading"
-          :disabled="loading"
+          :disabled="loading || issubmit"
           >繼續</v-btn
         >
       </v-card-actions>
@@ -76,6 +76,7 @@ export default {
       formHasErrors: false,
       loading: false,
       errorMessages: "",
+      issubmit: false,
       emailRule:
         /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,24}))$/,
       email: null,
@@ -99,7 +100,8 @@ export default {
       await this.$axios.postApi("/api/password/forget", { email: this.email }).then((res) => {
         if (!res) return;
         const { data } = res;
-        this.$store.dispatch("setSuccess", data.message);
+        this.$store.dispatch("setSuccess", data.message + "，請去信箱取得驗證碼進行下一步動作");
+        this.issubmit = true;
       });
     },
   },

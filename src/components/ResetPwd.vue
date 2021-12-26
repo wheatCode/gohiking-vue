@@ -42,7 +42,10 @@
         v-model="checkPwd"
         class="pt-0"
         placeholder="請重新輸入密碼"
-        :rules="[() => !!checkPwd || '重新輸入密碼是必填的']"
+        :rules="[
+          () => !!checkPwd || '重新輸入密碼是必填的',
+          () => password == checkPwd || '兩者密碼必須相同',
+        ]"
       ></v-text-field>
     </v-card-text>
 
