@@ -44,7 +44,6 @@
 
         <router-link to="/ForgetPwd" class="d-block text-right black--text">忘記密碼</router-link>
       </v-card-text>
-      {{ errorMessages }}
       <v-card-actions>
         <v-btn
           block
@@ -68,7 +67,6 @@ export default {
     return {
       loading: false,
       formHasErrors: false,
-      errorMessages: "",
       emailRule:
         /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,24}))$/,
       user: {
@@ -78,18 +76,19 @@ export default {
     };
   },
   methods: {
-    submit() {
+    async submit() {
       this.formHasErrors = false;
+      this.loading = true;
       Object.keys(this.form).forEach((f) => {
         if (!this.form[f]) this.formHasErrors = true;
         if (!this.$refs[f].validate(true)) this.formHasErrors = true;
       });
       if (!this.formHasErrors) {
-        this.login();
+        await this.login();
       }
+      this.loading = false;
     },
     async login() {
-      this.loading = true;
       await this.$axios.postApi("/api/login", { ...this.user }).then((res) => {
         if (!res) return;
         const { data } = res;
@@ -98,7 +97,6 @@ export default {
         this.$cookies.set("user_Id", userId);
         this.$router.push({ name: "Index" });
       });
-      this.loading = false;
     },
   },
   computed: {

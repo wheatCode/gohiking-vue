@@ -36,7 +36,7 @@
         </div>
       </div>
 
-      <v-card v-else color="basil" flat>
+      <v-card v-else color="basil" flat elevation="0">
         <v-card-text class="pa-0" v-show="trails.length">
           <v-list class="pa-0">
             <v-list-item-group color="primary">
@@ -125,6 +125,10 @@ export default {
   },
   methods: {
     async getTrails() {
+      if (this.$cookies.get("user_Id") || this.$cookies.get("gohiking_token")) {
+        this.$router.push({ name: "Login" });
+      }
+
       await this.$axios
         .getApi(`/api/favorites?uuid=${this.$cookies.get("user_Id")}`)
         .then((res) => {
