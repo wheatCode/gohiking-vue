@@ -1,5 +1,5 @@
 <template>
-  <v-sheet color="grey lighten-3" class="overflow-hidden" style="position: relative" height="100vh">
+  <v-sheet color="grey lighten-3" class="overflow-hidden" height="100vh">
     <v-tabs-items v-model="tab" touchless>
       <v-tab-item>
         <v-app-bar color="deep-purple accent-4" dense dark>
@@ -77,7 +77,7 @@
           color="grey lighten-3"
           class="overflow-y-auto"
           height="100vh"
-          style="padding-bottom: 120px; vertical-align: middle"
+          style="position: relative; padding-bottom: 120px; vertical-align: middle"
         >
           <v-carousel interval="3500" :show-arrows="false" cycle height="300" hide-delimiters>
             <v-carousel-item v-for="banner in banners" :src="banner.image" :key="banner.id">
@@ -195,7 +195,7 @@
       <v-tab-item><collect /></v-tab-item>
     </v-tabs-items>
 
-    <v-toolbar style="position: absolute; bottom: 0px; width: 100%; z-index: 9999">
+    <v-toolbar style="position: absolute; bottom: calc(100vh - 100%); width: 100%; z-index: 9999">
       <v-tabs
         v-model="tab"
         background-color="deep-purple accent-4"
