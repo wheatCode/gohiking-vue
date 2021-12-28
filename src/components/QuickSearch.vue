@@ -1,6 +1,11 @@
 <template>
   <v-sheet class="overflow-hidden" style="position: relative">
+    <div v-if="$store.state.loading">
+      <v-skeleton-loader width="100%" type="image"></v-skeleton-loader>
+    </div>
+
     <v-toolbar
+      v-else
       flat
       height="250"
       class="toolbar"

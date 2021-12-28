@@ -1,6 +1,11 @@
 <template>
   <v-sheet class="overflow-hidden" style="position: relative">
+    <div v-if="$store.state.loading">
+      <v-skeleton-loader width="100%" type="image"></v-skeleton-loader>
+    </div>
+
     <v-toolbar
+      v-else
       flat
       height="250"
       class="toolbar"
@@ -22,7 +27,11 @@
       </v-btn> -->
     </v-toolbar>
 
-    <v-sheet class="px-2 pt-1" height="130">
+    <div v-if="$store.state.loading">
+      <v-skeleton-loader width="100%" type="image"></v-skeleton-loader>
+    </div>
+
+    <v-sheet class="px-2 pt-1" height="130" v-else>
       <h2 class="py-2">{{ article.title }}</h2>
       <p>
         {{ article.content }}

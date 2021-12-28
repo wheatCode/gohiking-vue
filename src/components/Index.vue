@@ -12,15 +12,20 @@
         </v-app-bar>
 
         <v-navigation-drawer v-model="drawer" absolute left temporary style="z-index: 99999">
-          <v-sheet class="px-3">
+          <div v-if="!$store.state.loading" class="px-3">
+            <v-skeleton-loader type="avatar"></v-skeleton-loader>
+            <v-skeleton-loader type="list-item"></v-skeleton-loader>
+            <v-skeleton-loader type="list-item"></v-skeleton-loader>
+          </div>
+          <v-sheet v-else class="px-3">
             <v-img :src="user.image" class="rounded-circle my-3" width="55" height="55"> </v-img>
             <div class="font-weight-bold text-center" style="width: 55px">
               {{ user.name || "訪客" }}
             </div>
-            <span
-              class="d-block grey--text text--darken-1 font-weight-regular text-subtitle-2 my-3"
-              >{{ user.email || "--Guest--" }}</span
-            >
+
+            <div class="d-block grey--text text--darken-1 font-weight-regular text-subtitle-2 my-3">
+              {{ user.email || "--Guest--" }}
+            </div>
           </v-sheet>
 
           <v-divider></v-divider>
@@ -84,7 +89,12 @@
               <v-sheet class="white--text px-3 mt-15" style="background: rgba(96, 46, 46, 0.5)">
                 <div class="text-h5 py-2">{{ banner.title }}</div>
                 <div class="text-h6">{{ banner.content }}</div>
-                <v-btn class="mt-4 mb-4" rounded color="success" :href="banner.link">
+                <v-btn
+                  class="mt-4 mb-4"
+                  rounded
+                  color="success"
+                  :href="`/TrailInTroduction/${banner.id}`"
+                >
                   <span>查看步道</span>
                   <v-icon class="white--text">mdi-arrow-right</v-icon>
                 </v-btn>
