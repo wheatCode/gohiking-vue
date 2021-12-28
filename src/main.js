@@ -8,6 +8,9 @@ import GAuth from 'vue-google-oauth2'
 import VueCookies from 'vue-cookies'
 import axios from '@/plugins/axios'
 import VueSocialSharing from 'vue-social-sharing'
+import VueAnalytics from 'vue-analytics'
+
+
 
 Vue.prototype.$axios = axios
 Vue.config.productionTip = false;
@@ -21,6 +24,13 @@ const gauthOption = {
 Vue.use(GAuth, gauthOption)
 Vue.use(VueCookies)
 Vue.use(VueSocialSharing);
+Vue.use(VueAnalytics, {
+  id: 'G-H3XKP136RE',
+  router,
+  autoTracking: {
+    pageviewOnLoad: false
+  }
+})
 
 new Vue({
   router,

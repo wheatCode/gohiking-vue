@@ -15,6 +15,7 @@
     "js-base64": "^3.7.2",
     "js-cookie": "^3.0.1",
     "vue": "^2.6.11",
+    "vue-analytics": "^5.22.1",
     "vue-cookies": "^1.7.4",
     "vue-core-image-upload": "^2.4.13",
     "vue-cropperjs": "^4.2.0",
