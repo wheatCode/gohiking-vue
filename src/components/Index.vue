@@ -12,10 +12,13 @@
         </v-app-bar>
 
         <v-navigation-drawer v-model="drawer" absolute left temporary style="z-index: 99999">
-          <div v-if="!$store.state.loading" class="px-3">
+          <div v-if="$store.state.loading" class="px-3 mt-2">
             <v-skeleton-loader type="avatar"></v-skeleton-loader>
-            <v-skeleton-loader type="list-item"></v-skeleton-loader>
-            <v-skeleton-loader type="list-item"></v-skeleton-loader>
+            <v-skeleton-loader
+              type="list-item"
+              width="100"
+              class="skeleton-pa-0"
+            ></v-skeleton-loader>
           </div>
           <v-sheet v-else class="px-3">
             <v-img :src="user.image" class="rounded-circle my-3" width="55" height="55"> </v-img>
@@ -346,10 +349,14 @@ export default {
 .theme--light.v-icon {
   color: #000;
 }
-
 .footer-tabs-prev-none::v-deep {
   .v-slide-group__prev {
     display: none !important;
+  }
+}
+.skeleton-pa-0::v-deep {
+  .v-skeleton-loader__list-item.v-skeleton-loader__bone {
+    padding: 0;
   }
 }
 </style>

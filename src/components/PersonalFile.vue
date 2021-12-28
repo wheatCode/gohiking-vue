@@ -1,11 +1,5 @@
 <template>
-  <v-sheet
-    v-if="!cropper"
-    class="overflow-hidden"
-    style="position: relative"
-    height="100vh"
-    color="grey lighten-4"
-  >
+  <v-sheet class="overflow-hidden" style="position: relative" height="100vh" color="grey lighten-4">
     <v-toolbar color="success" class="white--text">
       <v-btn icon @click="$store.dispatch('toPrevRouter')" class="white--text">
         <v-icon size="30" class="icon_border">mdi-arrow-left</v-icon>
@@ -15,7 +9,7 @@
 
       <v-spacer></v-spacer>
 
-      <v-btn icon class="white--text" x-large v-if="!notEdit && !cropper" @click="updateUser">
+      <v-btn icon class="white--text" x-large v-if="!notEdit && !cropper" @click="submit">
         完成
       </v-btn>
 
@@ -32,7 +26,7 @@
       <cropper :cropper="cropper"></cropper>
     </v-sheet>
 
-    <v-sheet class="text-center mt-5 mb-3" color="transparent" height="170px">
+    <v-sheet class="text-center mt-5 mb-3" color="transparent" height="170px" v-if="!cropper">
       <v-sheet
         class="rounded-circle my-3 mx-auto overflow-hidden"
         :style="{
@@ -61,6 +55,7 @@
     </v-sheet>
 
     <v-card
+      v-if="!cropper"
       elevation="0"
       rounded="0"
       class="text-center personal-input"
@@ -71,7 +66,7 @@
         <div v-if="!$store.state.loading">
           <!-- 姓名 -->
           <v-row class="py-2">
-            <v-col cols="3" class="d-flex align-center py-0">
+            <v-col cols="3" class="d-flex align-center justify-center py-0">
               <label>姓名</label>
             </v-col>
 
@@ -82,14 +77,13 @@
                 placeholder="請輸入您的姓名"
                 v-model="user.name"
                 :disabled="notEdit"
-                hide-details="auto"
                 :rules="[() => !!user.name || '姓名是必填的']"
               ></v-text-field>
             </v-col>
           </v-row>
           <!-- 性別 -->
           <v-row class="py-2">
-            <v-col cols="3" class="d-flex align-center py-0">
+            <v-col cols="3" class="d-flex align-center justify-center py-0">
               <label>性別</label>
             </v-col>
 
@@ -104,14 +98,12 @@
                 class="pa-0"
                 v-model="user.gender"
                 v-if="!notEdit"
-                hide-details="auto"
-                :rules="[() => !!user.gender || '性別是必填的']"
+                :rules="[() => typeof user.gender == 'number' || '性別是必填的']"
               ></v-select>
 
               <v-text-field
                 class="disabled-style-none pt-0"
                 v-model="showGender"
-                hide-details="auto"
                 v-else
                 disabled
               ></v-text-field>
@@ -119,7 +111,7 @@
           </v-row>
           <!-- 國碼 -->
           <v-row class="py-2">
-            <v-col cols="3" class="d-flex align-center py-0">
+            <v-col cols="3" class="d-flex align-center justify-center py-0">
               <label>國碼</label>
             </v-col>
 
@@ -128,7 +120,6 @@
                 class="disabled-style-none pt-0"
                 disabled
                 :value="showCellphone"
-                hide-details="auto"
               ></v-text-field
             ></v-col>
 
@@ -139,7 +130,6 @@
                 v-model="showSelectCountryCode"
                 item-text="text"
                 item-value="value"
-                hide-details="auto"
               ></v-select>
             </v-col>
 
@@ -149,14 +139,16 @@
                 class="disabled-style-none pt-0"
                 placeholder="請輸入您的電話"
                 v-model="user.phone_number"
-                hide-details="auto"
-                :rules="[() => !!user.phone_number || '電話是必填的']"
+                :rules="[
+                  () => !!user.phone_number || '電話是必填的',
+                  () => cellphoneRule.test(user.phone_number) || '填寫正確的電話格式',
+                ]"
               ></v-text-field
             ></v-col>
           </v-row>
           <!-- 生日 -->
           <v-row class="py-2">
-            <v-col cols="3" class="d-flex align-center py-0">
+            <v-col cols="3" class="d-flex align-center justify-center py-0">
               <label>生日</label>
             </v-col>
 
@@ -172,7 +164,6 @@
                     readonly
                     v-bind="attrs"
                     v-on="on"
-                    hide-details="auto"
                     :rules="[() => !!user.birth || '生日是必填的']"
                   ></v-text-field>
                 </template>
@@ -193,13 +184,12 @@
                 class="disabled-style-none pt-0"
                 :value="user.birth"
                 disabled
-                hide-details="auto"
               ></v-text-field>
             </v-col>
           </v-row>
           <!-- 居住地 -->
           <v-row class="py-2">
-            <v-col cols="3" class="d-flex align-center py-0">
+            <v-col cols="3" class="d-flex align-center justify-center py-0">
               <label>居住地</label>
             </v-col>
 
@@ -208,7 +198,6 @@
                 class="disabled-style-none pt-0"
                 :value="user.county_id ? countries[user.county_id - 1].name : null"
                 :disabled="notEdit"
-                hide-details="auto"
                 v-if="notEdit"
               ></v-text-field>
 
@@ -219,7 +208,6 @@
                 v-model="showSelectCountries"
                 item-text="text"
                 item-value="value"
-                hide-details="auto"
                 :rules="[() => !!showSelectCountries || '居住地是必填的']"
                 v-else
               ></v-select
@@ -247,6 +235,7 @@ export default {
       cropper: false,
       notEdit: true,
       user_id: false,
+      cellphoneRule: /^(09)[0-9]{8}$/,
       country_code: 5,
       countycodes: [],
       countries: [],
@@ -262,15 +251,16 @@ export default {
     this.$store.commit("loading", false);
   },
   methods: {
-    async updateUser() {
+    async submit() {
       this.$store.commit("loading", true);
       this.notEdit = !this.notEdit;
       await this.$axios
         .putApi(`/api/user/${this.user_id}`, {
           ...this.user,
-          image: Buffer.from(this.$store.state.cropperImage, "base64")
-            ? this.$store.state.cropperImage
-            : null,
+          image:
+            this.$store.state.cropperImage.indexOf("https") != -1
+              ? null
+              : this.$store.state.cropperImage,
         })
         .then((res) => {
           if (!res) return;
